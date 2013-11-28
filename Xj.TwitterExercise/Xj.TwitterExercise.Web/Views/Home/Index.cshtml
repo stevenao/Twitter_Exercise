@@ -1,0 +1,184 @@
+﻿@model dynamic
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Twitter Exercise</title>
+        <style>
+            .tablestyle {
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+                box-shadow: 10px 10px 5px #888888;
+                border: 1px solid #000000;
+                -moz-border-radius-bottomleft: 13px;
+                -webkit-border-bottom-left-radius: 13px;
+                border-bottom-left-radius: 13px;
+                -moz-border-radius-bottomright: 13px;
+                -webkit-border-bottom-right-radius: 13px;
+                border-bottom-right-radius: 13px;
+                -moz-border-radius-topright: 13px;
+                -webkit-border-top-right-radius: 13px;
+                border-top-right-radius: 13px;
+                -moz-border-radius-topleft: 13px;
+                -webkit-border-top-left-radius: 13px;
+                border-top-left-radius: 13px;
+            }
+
+                .tablestyle table {
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    width: 100%;
+                    height: 100%;
+                    margin: 0px;
+                    padding: 0px;
+                }
+
+                .tablestyle tr:last-child td:last-child {
+                    -moz-border-radius-bottomright: 13px;
+                    -webkit-border-bottom-right-radius: 13px;
+                    border-bottom-right-radius: 13px;
+                }
+
+                .tablestyle table tr:first-child td:first-child {
+                    -moz-border-radius-topleft: 13px;
+                    -webkit-border-top-left-radius: 13px;
+                    border-top-left-radius: 13px;
+                }
+
+                .tablestyle table tr:first-child td:last-child {
+                    -moz-border-radius-topright: 13px;
+                    -webkit-border-top-right-radius: 13px;
+                    border-top-right-radius: 13px;
+                }
+
+                .tablestyle tr:last-child td:first-child {
+                    -moz-border-radius-bottomleft: 13px;
+                    -webkit-border-bottom-left-radius: 13px;
+                    border-bottom-left-radius: 13px;
+                }
+
+                .tablestyle tr:nth-child(odd) {
+                    background-color: #e5e5e5;
+                }
+
+                .tablestyle tr:nth-child(even) {
+                    background-color: #ffffff;
+                }
+
+                .tablestyle td {
+                    vertical-align: middle;
+                    border: 1px solid #000000;
+                    border-width: 0px 1px 1px 0px;
+                    text-align: left;
+                    padding: 7px;
+                    font-size: 10px;
+                    font-family: Arial;
+                    font-weight: normal;
+                    color: #000000;
+                }
+
+                .tablestyle tr:last-child td {
+                    border-width: 0px 1px 0px 0px;
+                }
+
+                .tablestyle tr td:last-child {
+                    border-width: 0px 0px 1px 0px;
+                }
+
+                .tablestyle tr:last-child td:last-child {
+                    border-width: 0px 0px 0px 0px;
+                }
+
+                .tablestyle tr:first-child td {
+                    background: -o-linear-gradient(bottom, #cccccc 5%, #b2b2b2 100%);
+                    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cccccc), color-stop(1, #b2b2b2) );
+                    background: -moz-linear-gradient( center top, #cccccc 5%, #b2b2b2 100% );
+                    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cccccc", endColorstr="#b2b2b2");
+                    background: -o-linear-gradient(top,#cccccc,b2b2b2);
+                    background-color: #cccccc;
+                    border: 0px solid #000000;
+                    text-align: center;
+                    border-width: 0px 0px 1px 1px;
+                    font-size: 14px;
+                    font-family: Arial;
+                    font-weight: bold;
+                    color: #000000;
+                }
+
+                .tablestyle tr:first-child:hover td {
+                    background: -o-linear-gradient(bottom, #cccccc 5%, #b2b2b2 100%);
+                    background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cccccc), color-stop(1, #b2b2b2) );
+                    background: -moz-linear-gradient( center top, #cccccc 5%, #b2b2b2 100% );
+                    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#cccccc", endColorstr="#b2b2b2");
+                    background: -o-linear-gradient(top,#cccccc,b2b2b2);
+                    background-color: #cccccc;
+                }
+
+                .tablestyle tr:first-child td:first-child {
+                    border-width: 0px 0px 1px 0px;
+                }
+
+                .tablestyle tr:first-child td:last-child {
+                    border-width: 0px 0px 1px 1px;
+                }
+
+                .spaceOutBottom {
+                    margin-bottom: 40px;
+                }
+
+        </style>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="tablestyle spaceOutBottom">
+            <table id="aggregateTable">
+                <tr>
+                    <td>Screen Name</td>
+                    <td>Number of Tweets</td>
+                    <td>Mentions of Other Users</td>
+                </tr>
+            </table>
+        </div>
+        <div class="tablestyle spaceOutBottom">
+            <table id="tweetsTable">
+                <tr>
+                    <td>Screen Name</td>
+                    <td>Tweet</td>
+                    <td>Date</td>
+                </tr>
+            </table>
+        </div>        
+        <script>
+            (function (dataUrl, tableAgg, tableTweets) {
+                var tableRow = '<tr/>';
+                var tableCell = '<td/>';
+                $.post(dataUrl, function (data) {
+                    var payByPhoneTweets = data.PayByPhoneTweets;
+                    var numOfTweetsPerAccount = data.TweetsCountPerAccount;
+                    var mentionsOtherUsersPerAccount = data.MentionOtherCountPerAccount;
+                    var accounts = data.Accounts;
+
+                    $.each(accounts, function(i, el) {
+                        tableAgg.append($(tableRow)
+                            .append($(tableCell).text(el))
+                            .append($(tableCell).text(numOfTweetsPerAccount[el]))
+                            .append($(tableCell).text(mentionsOtherUsersPerAccount[el])));
+                    });
+                    $.each(payByPhoneTweets, function(i, el) {
+                        tableTweets.append($(tableRow)
+                            .append($(tableCell).text(el.TwitterAccount))
+                            .append($(tableCell).text(el.Text))
+                            .append($(tableCell).text(new Date(parseInt(el.CreatedAt.substr(6))))));
+                    });
+                }, 'json').fail(function() {
+                    alert('There was an error trying to access the tweets');
+                });
+            })('@Url.Action("TweetsData")',$('#aggregateTable'),$('#tweetsTable'));
+        </script>
+    </body>
+
+</html>
